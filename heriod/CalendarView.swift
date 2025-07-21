@@ -94,6 +94,7 @@ struct CalendarView: View {
     private func dayCell(for date: Date) -> some View {
         let dayPeriods = getPeriodsForDate(date)
         let hasPeriod = !dayPeriods.isEmpty
+        let isPredictedPeriod = PeriodCalculations.isDateInPredictedPeriod(date, periods: periods)
         let isToday = calendar.isDateInToday(date)
         
         return Button(action: {
@@ -105,10 +106,18 @@ struct CalendarView: View {
         }) {
             ZStack {
                 Circle()
-                    .fill(hasPeriod ? AppTheme.primary : Color.clear)
+                    .fill(hasPeriod ? AppTheme.primary : 
+                          isPredictedPeriod ? AppTheme.primary.opacity(0.4) : 
+                          Color.clear)
                     .frame(width: 35, height: 35)
                 
-                if isToday && !hasPeriod {
+                if isPredictedPeriod && !hasPeriod {
+                    Circle()
+                        .stroke(AppTheme.primary.opacity(0.6), lineWidth: 1.5)
+                        .frame(width: 35, height: 35)
+                }
+                
+                if isToday && !hasPeriod && !isPredictedPeriod {
                     Circle()
                         .stroke(AppTheme.primary, lineWidth: 2)
                         .frame(width: 35, height: 35)
@@ -116,7 +125,9 @@ struct CalendarView: View {
                 
                 Text("\(calendar.component(.day, from: date))")
                     .font(.system(size: 16, weight: hasPeriod ? .semibold : .regular))
-                    .foregroundColor(hasPeriod ? .white : .primary)
+                    .foregroundColor(hasPeriod ? .white : 
+                                   isPredictedPeriod ? AppTheme.primary : 
+                                   .primary)
             }
         }
     }

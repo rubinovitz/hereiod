@@ -9,23 +9,18 @@ struct PeriodListView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var showingAdd = false
 
-    // Average cycle length across existing periods
-    private var averageCycleLength: Int? {
-        guard periods.count > 1 else { return nil }
-        let sorted = periods.sorted { $0.startDate < $1.startDate }
-        var lengths: [Int] = []
-        for i in 1..<sorted.count {
-            let days = Calendar.current.dateComponents([.day],
-                                                        from: sorted[i-1].startDate,
-                                                        to: sorted[i].startDate).day ?? 0
-            if (1..<60).contains(days) { lengths.append(days) }
-        }
-        return lengths.isEmpty ? nil : lengths.reduce(0, +) / lengths.count
-    }
-
     private var nextPrediction: Date? {
-        guard let last = periods.first, let avg = averageCycleLength else { return nil }
-        return Calendar.current.date(byAdding: .day, value: avg, to: last.startDate)
+        guard !isCurrentlyOnPeriod else { return nil }
+        return PeriodCalculations.nextPredictedPeriod(from: periods)
+    }
+    
+    private var isCurrentlyOnPeriod: Bool {
+        let today = Calendar.current.startOfDay(for: Date())
+        return periods.contains { period in
+            let startDate = Calendar.current.startOfDay(for: period.startDate)
+            let endDate = Calendar.current.startOfDay(for: period.endDate ?? period.startDate)
+            return today >= startDate && today <= endDate
+        }
     }
 
     var body: some View {
