@@ -52,4 +52,30 @@ struct PeriodCalculations {
         
         return startOfDay >= predictedStartDay && startOfDay <= predictedEndDay
     }
+    
+    /// Predict PMS start date (typically 7-14 days before period)
+    static func nextPredictedPMS(from periods: [Period], daysBefore: Int = 7) -> Date? {
+        guard let predictedPeriodStart = nextPredictedPeriod(from: periods) else {
+            return nil
+        }
+        
+        return Calendar.current.date(byAdding: .day, value: -daysBefore, to: predictedPeriodStart)
+    }
+    
+    /// Check if a given date falls within the predicted PMS range
+    static func isDateInPredictedPMS(_ date: Date, periods: [Period], pmsDuration: Int = 7, daysBefore: Int = 7) -> Bool {
+        guard let pmsStart = nextPredictedPMS(from: periods, daysBefore: daysBefore) else {
+            return false
+        }
+        
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let pmsStartDay = Calendar.current.startOfDay(for: pmsStart)
+        
+        guard let pmsEnd = Calendar.current.date(byAdding: .day, value: pmsDuration - 1, to: pmsStart) else {
+            return false
+        }
+        let pmsEndDay = Calendar.current.startOfDay(for: pmsEnd)
+        
+        return startOfDay >= pmsStartDay && startOfDay <= pmsEndDay
+    }
 }

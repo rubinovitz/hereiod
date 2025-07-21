@@ -95,6 +95,7 @@ struct CalendarView: View {
         let dayPeriods = getPeriodsForDate(date)
         let hasPeriod = !dayPeriods.isEmpty
         let isPredictedPeriod = PeriodCalculations.isDateInPredictedPeriod(date, periods: periods)
+        let isPredictedPMS = PeriodCalculations.isDateInPredictedPMS(date, periods: periods)
         let isToday = calendar.isDateInToday(date)
         
         return Button(action: {
@@ -108,6 +109,7 @@ struct CalendarView: View {
                 Circle()
                     .fill(hasPeriod ? AppTheme.primary : 
                           isPredictedPeriod ? AppTheme.primary.opacity(0.4) : 
+                          isPredictedPMS ? Color.orange.opacity(0.3) :
                           Color.clear)
                     .frame(width: 35, height: 35)
                 
@@ -117,7 +119,13 @@ struct CalendarView: View {
                         .frame(width: 35, height: 35)
                 }
                 
-                if isToday && !hasPeriod && !isPredictedPeriod {
+                if isPredictedPMS && !hasPeriod && !isPredictedPeriod {
+                    Circle()
+                        .stroke(Color.orange.opacity(0.7), lineWidth: 1.5)
+                        .frame(width: 35, height: 35)
+                }
+                
+                if isToday && !hasPeriod && !isPredictedPeriod && !isPredictedPMS {
                     Circle()
                         .stroke(AppTheme.primary, lineWidth: 2)
                         .frame(width: 35, height: 35)
@@ -127,6 +135,7 @@ struct CalendarView: View {
                     .font(.system(size: 16, weight: hasPeriod ? .semibold : .regular))
                     .foregroundColor(hasPeriod ? .white : 
                                    isPredictedPeriod ? AppTheme.primary : 
+                                   isPredictedPMS ? Color.orange :
                                    .primary)
             }
         }
