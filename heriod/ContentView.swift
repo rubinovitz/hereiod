@@ -220,7 +220,7 @@ struct PeriodCard: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(15)
         .shadow(color: Color.black.opacity(0.05), radius: 5, y: 3)
         .sheet(isPresented: $showingDetail) {
