@@ -116,12 +116,16 @@ struct ContentView: View {
                         PredictionCard(nextDate: date)
                             .padding(.horizontal)
                     }
-                    ScrollView {
-                        LazyVStack(spacing: 15) {
-                            ForEach(periods) { PeriodCard(period: $0) }
+                    List {
+                        ForEach(periods) { period in
+                            PeriodCard(period: period)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets(top: 7.5, leading: 16, bottom: 7.5, trailing: 16))
                         }
-                        .padding(.vertical)
                     }
+                    .listStyle(PlainListStyle())
+                    .scrollContentBackground(.hidden)
                 }
             }
             .navigationTitle("Period Tracker")
@@ -223,6 +227,14 @@ struct PeriodCard: View {
         .background(AppTheme.cardColor(for: colorScheme))
         .cornerRadius(15)
         .shadow(color: Color.black.opacity(0.05), radius: 5, y: 3)
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button(role: .destructive) {
+                ctx.delete(period)
+                try? ctx.save()
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
         .sheet(isPresented: $showingDetail) {
             PeriodDetailView(period: period)
         }
