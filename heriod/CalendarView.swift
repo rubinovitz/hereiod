@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 // MARK: – Calendar View
 
@@ -26,7 +27,10 @@ struct CalendarView: View {
                 VStack(spacing: 20) {
                     // Month/Year Header
                     HStack {
-                        Button(action: previousMonth) {
+                        Button(action: {
+                            UISelectionFeedbackGenerator.selection()
+                            previousMonth()
+                        }) {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(AppTheme.primary)
                                 .font(.title2)
@@ -40,7 +44,10 @@ struct CalendarView: View {
                         
                         Spacer()
                         
-                        Button(action: nextMonth) {
+                        Button(action: {
+                            UISelectionFeedbackGenerator.selection()
+                            nextMonth()
+                        }) {
                             Image(systemName: "chevron.right")
                                 .foregroundColor(AppTheme.primary)
                                 .font(.title2)
@@ -99,6 +106,7 @@ struct CalendarView: View {
         let isToday = calendar.isDateInToday(date)
         
         return Button(action: {
+            UISelectionFeedbackGenerator.selection()
             selectedDate = date
             selectedPeriods = dayPeriods
             if !dayPeriods.isEmpty {
@@ -235,7 +243,10 @@ struct DayDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button("Done") { 
+                        UIImpactFeedbackGenerator.lightImpact()
+                        dismiss() 
+                    }
                 }
             }
         }

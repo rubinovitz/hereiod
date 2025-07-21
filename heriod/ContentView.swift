@@ -4,6 +4,7 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
 
 // MARK: – Supporting Types
 
@@ -81,21 +82,28 @@ struct PeriodTrackerApp: App {
 // MARK: – Root View
 
 struct ContentView: View {
+    @State private var selectedTab = 0
+    
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             PeriodListView()
                 .tabItem {
                     Image(systemName: "list.bullet")
                     Text("List")
                 }
+                .tag(0)
             
             CalendarView()
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Calendar")
                 }
+                .tag(1)
         }
         .accentColor(AppTheme.primary)
+        .onChange(of: selectedTab) { _, _ in
+            UISelectionFeedbackGenerator.selection()
+        }
     }
 }
 
@@ -155,7 +163,10 @@ struct PeriodCard: View {
                         .font(.subheadline).foregroundColor(.secondary)
                 }
                 Spacer()
-                Button { showingDetail = true } label: {
+                Button { 
+                    UIImpactFeedbackGenerator.lightImpact()
+                    showingDetail = true 
+                } label: {
                     Image(systemName: "chevron.right.circle")
                         .foregroundColor(AppTheme.primary)
                 }
@@ -183,6 +194,7 @@ struct PeriodCard: View {
         .shadow(color: Color.black.opacity(0.05), radius: 5, y: 3)
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
+                UINotificationFeedbackGenerator.warning()
                 ctx.delete(period)
                 try? ctx.save()
             } label: {
@@ -237,10 +249,16 @@ struct AddPeriodView: View {
             .navigationTitle("Add Period")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel") { 
+                        UIImpactFeedbackGenerator.lightImpact()
+                        dismiss() 
+                    }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") { save() }
+                    Button("Save") { 
+                        UINotificationFeedbackGenerator.success()
+                        save() 
+                    }
                 }
             }
         }
@@ -251,7 +269,7 @@ struct AddPeriodView: View {
                             endDate: hasEnded ? endDate : nil,
                             flow: flow,
                             symptoms: selected,
-                            notes: notes)
+                            notes: notes)   
         ctx.insert(period)
         try? ctx.save()
         dismiss()
@@ -294,6 +312,7 @@ struct PeriodDetailView: View {
             notesSection
             Section {
                 Button(role: .destructive) {
+                    UINotificationFeedbackGenerator.error()
                     ctx.delete(period)
                     try? ctx.save()
                     dismiss()
@@ -306,7 +325,10 @@ struct PeriodDetailView: View {
                 closeButton
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Edit") { editing = true }
+                Button("Edit") { 
+                    UIImpactFeedbackGenerator.lightImpact()
+                    editing = true 
+                }
             }
         }
     }
@@ -340,10 +362,16 @@ struct PeriodDetailView: View {
         .navigationTitle("Edit Period")
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button("Cancel") { editing = false }
+                Button("Cancel") { 
+                    UIImpactFeedbackGenerator.lightImpact()
+                    editing = false 
+                }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Save") { applyChanges() }
+                Button("Save") { 
+                    UINotificationFeedbackGenerator.success()
+                    applyChanges() 
+                }
             }
         }
     }
@@ -378,7 +406,12 @@ struct PeriodDetailView: View {
     private func labeled(_ title: String, _ date: Date, formatter: DateFormatter) -> some View {
         labeled(title, formatter.string(from: date))
     }
-    private var closeButton: some View { Button("Close") { dismiss() } }
+    private var closeButton: some View { 
+        Button("Close") { 
+            UIImpactFeedbackGenerator.lightImpact()
+            dismiss() 
+        } 
+    }
 
     private func applyChanges() {
         if !hasEnded { draft.endDate = nil }
@@ -400,7 +433,10 @@ struct MultipleSelectionRow: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            UISelectionFeedbackGenerator.selection()
+            action()
+        }) {
             HStack {
                 Text(title).foregroundColor(.primary)
                 Spacer()

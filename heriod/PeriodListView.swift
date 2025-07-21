@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 // MARK: – Period List View
 
@@ -49,7 +50,10 @@ struct PeriodListView: View {
             .navigationTitle("Period Tracker")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button { showingAdd = true } label: {
+                    Button { 
+                        UIImpactFeedbackGenerator.mediumImpact()
+                        showingAdd = true 
+                    } label: {
                         Image(systemName: "plus.circle.fill")
                             .foregroundColor(AppTheme.primary)
                             .font(.title2)
