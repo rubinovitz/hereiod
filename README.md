@@ -1,4 +1,4 @@
-# Heriod
+# Hereiod
 
 A local-first, privacy preserving period tracker in swift.
 
