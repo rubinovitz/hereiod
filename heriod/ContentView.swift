@@ -83,6 +83,7 @@ struct PeriodTrackerApp: App {
 struct ContentView: View {
     @Query(sort: \Period.startDate, order: .reverse) private var periods: [Period]
     @Environment(\.modelContext) private var ctx
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showingAdd = false
 
     // Average cycle length across existing periods
@@ -107,8 +108,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(colors: [Color(hex: "FFE5EC"), Color(hex: "FFC2D1")],
-                                startPoint: .top, endPoint: .bottom)
+                AppTheme.backgroundColor(for: colorScheme)
                     .ignoresSafeArea()
 
                 VStack(spacing: 20) {
@@ -129,7 +129,7 @@ struct ContentView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button { showingAdd = true } label: {
                         Image(systemName: "plus.circle.fill")
-                            .foregroundColor(Color(hex: "A8336F"))
+                            .foregroundColor(AppTheme.primary)
                             .font(.title2)
                     }
                 }
@@ -169,10 +169,9 @@ struct PredictionCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 15)
-                .fill(LinearGradient(colors: [Color(hex: "A8336F"), Color(hex: "C1549C")],
-                                     startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(AppTheme.primary)
         )
-        .shadow(color: Color(hex: "A8336F").opacity(0.3), radius: 10, y: 5)
+        .shadow(color: AppTheme.primary.opacity(0.3), radius: 10, y: 5)
     }
 }
 
@@ -180,6 +179,7 @@ struct PredictionCard: View {
 
 struct PeriodCard: View {
     @Environment(\.modelContext) private var ctx
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showingDetail = false
     let period: Period
 
@@ -199,7 +199,7 @@ struct PeriodCard: View {
                 Spacer()
                 Button { showingDetail = true } label: {
                     Image(systemName: "chevron.right.circle")
-                        .foregroundColor(Color(hex: "A8336F"))
+                        .foregroundColor(AppTheme.primary)
                 }
             }
 
@@ -211,8 +211,8 @@ struct PeriodCard: View {
                                 .font(.caption)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(Color(hex: "FFE5EC"))
-                                .foregroundColor(Color(hex: "A8336F"))
+                                .background(AppTheme.secondary)
+                                .foregroundColor(AppTheme.primary)
                                 .cornerRadius(15)
                         }
                     }
@@ -220,7 +220,7 @@ struct PeriodCard: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(AppTheme.cardColor(for: colorScheme))
         .cornerRadius(15)
         .shadow(color: Color.black.opacity(0.05), radius: 5, y: 3)
         .sheet(isPresented: $showingDetail) {
@@ -439,7 +439,7 @@ struct MultipleSelectionRow: View {
                 Text(title).foregroundColor(.primary)
                 Spacer()
                 if isSelected {
-                    Image(systemName: "checkmark").foregroundColor(Color(hex: "A8336F"))
+                    Image(systemName: "checkmark").foregroundColor(AppTheme.primary)
                 }
             }
         }
