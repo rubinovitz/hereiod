@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 
 @main
@@ -27,6 +28,11 @@ struct heriodApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onAppear {
+                    Task {
+                        await NotificationManager.shared.requestPermission()
+                    }
+                }
         }
         .modelContainer(sharedModelContainer)
     }

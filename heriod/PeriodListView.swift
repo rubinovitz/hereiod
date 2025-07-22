@@ -63,6 +63,12 @@ struct PeriodListView: View {
             .sheet(isPresented: $showingAdd) {
                 AddPeriodView()
             }
+            .onChange(of: periods) { _, _ in
+                NotificationManager.shared.updatePredictionNotifications(for: periods)
+            }
+            .onAppear {
+                NotificationManager.shared.updatePredictionNotifications(for: periods)
+            }
         }
     }
 }
